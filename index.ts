@@ -1,4 +1,6 @@
 import express from 'express';
+import diagnosisService from "./src/services/diagnosisService";
+
 const app = express();
 app.use(express.json());
 
@@ -22,6 +24,11 @@ app.get('/api/patients', (_req, res) => {
             "occupation": "New york city cop"
         }]
     ));
+});
+
+
+app.get('/api/diagnoses', (_req, res) => {
+    res.send(diagnosisService.getEntries());
 });
 
 app.listen(PORT, () => {
