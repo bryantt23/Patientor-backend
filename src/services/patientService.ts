@@ -1,8 +1,13 @@
 import patientData from '../../data/patients.json';
 
-import { Patient } from '../../types';
+import { Patient, NonSensitivePatient } from '../../types';
 
 const patients: Array<Patient> = patientData as Array<Patient>;
+
+const getNonSensitiveEntries = (): Array<NonSensitivePatient> => {
+    console.log('object', patients);
+    return patients.map(({ id, name, dateOfBirth, gender, occupation }) => ({ id, name, dateOfBirth, gender, occupation }));
+};
 
 const getEntries = (): Array<Patient> => {
     return patients;
@@ -14,5 +19,6 @@ const addEntry = () => {
 
 export default {
     getEntries,
-    addEntry
+    addEntry,
+    getNonSensitiveEntries
 };

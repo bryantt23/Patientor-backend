@@ -17,7 +17,7 @@ app.get('/api/diagnoses', (_req, res) => {
 });
 
 app.get('/api/patients', (_req, res) => {
-    res.send(patientService.getEntries());
+    res.send(patientService.getNonSensitiveEntries());
 });
 
 app.listen(PORT, () => {
