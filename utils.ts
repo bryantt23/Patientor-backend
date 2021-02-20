@@ -2,13 +2,13 @@
 
 import { Patient, NewPatient } from './types';
 
-const parseName = (name: any): string => {
-    if (!name || !isString(name)) {
+const parseInput = (input: any, property: string): string => {
+    if (!input || !isString(input)) {
         // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-        throw new Error("Incorrect or missing name: " + name);
+        throw new Error("Incorrect or missing input: " + input + ' for property ' + property);
     }
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    return name;
+    return input;
 };
 
 const isString = (text: any): boolean => {
@@ -17,11 +17,16 @@ const isString = (text: any): boolean => {
 
 const toNewPatient = (object: NewPatient): Patient => {
 
+    for (let x in object) {
+        console.log(x);
+    }
 
     const newPatient: Patient = {
         id: `${Date.now()}`,
         ...object,
-        name: parseName(object.name),
+        name: parseInput(object.name, "name"),
+        occupation: parseInput(object.occupation, "occupation"),
+
     };
 
     return newPatient;
