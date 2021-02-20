@@ -1,6 +1,7 @@
 import express from 'express';
 import diagnosisService from './src/services/diagnosisService';
 import patientService from './src/services/patientService';
+import toNewPatient from "./utils";
 
 const app = express();
 app.use(express.json());
@@ -21,12 +22,15 @@ app.get('/api/patients', (_req, res) => {
 });
 
 app.post('/api/patients', (req, res) => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const { dateOfBirth, gender, name, occupation, ssn } = req.body;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const newPatient = patientService.addPatient({ dateOfBirth, gender, name, occupation, ssn })
+    try {
+        const newPatient = toNewPatient(req.body);
 
-    res.json(newPatient);
+        const addedPatient = patientService.addPatient(newPatient);
+        res.json(addedPatient);
+    } catch (error) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        res.status(400).send(error.message);
+    }
 });
 
 app.listen(PORT, () => {
