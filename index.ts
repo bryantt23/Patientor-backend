@@ -21,6 +21,17 @@ app.get('/api/patients', (_req, res) => {
     res.send(patientService.getNonSensitiveEntries());
 });
 
+app.get('/api/patients/:id', (_req, res) => {
+    try {
+        const { id } = _req.params;
+        const patientInfo = patientService.getPatientInfo(id);
+        res.send(patientInfo);
+    } catch (error) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        res.status(400).send(error.message);
+    }
+});
+
 app.post('/api/patients', (req, res) => {
     try {
         const newPatient = toNewPatient(req.body);
