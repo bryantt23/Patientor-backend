@@ -35,7 +35,6 @@ app.get('/api/patients/:id', (_req, res) => {
 app.post('/api/patients', (req, res) => {
     try {
         const newPatient = toNewPatient(req.body);
-
         const addedPatient = patientService.addPatient(newPatient);
         res.json(addedPatient);
     } catch (error) {
