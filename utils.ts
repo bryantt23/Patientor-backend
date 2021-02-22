@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/restrict-plus-operands */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 
-import { Patient, NewPatient, Gender } from './types';
+import { Patient, NewPatient, Gender, Entry, BaseEntry } from './types';
+// import { Patient, NewPatient, Gender, Entry, EntryTypes, BaseEntry } from './types';
 
 const parseInput = (input: any, property: string): string => {
     if (!input || !isString(input)) {
@@ -11,9 +11,9 @@ const parseInput = (input: any, property: string): string => {
     return input;
 };
 
-const isGender = (param: any): Boolean => {
+const isGender = (param: any): boolean => {
     return Object.values(Gender).includes(param);
-}
+};
 
 const parseGender = (gender: any): Gender => {
     if (!gender || !isGender(gender)) {
@@ -48,7 +48,7 @@ const parseSsn = (ssn: any): string => {
     return ssn;
 };
 
-const toNewPatient = (object: NewPatient): Patient => {
+export const toNewPatient = (object: NewPatient): Patient => {
     const newPatient: Patient = {
         id: `${Date.now()}`,
         gender: parseGender(object.gender),
@@ -62,4 +62,49 @@ const toNewPatient = (object: NewPatient): Patient => {
     return newPatient;
 };
 
-export default toNewPatient;
+const throwError = (property: string) => {
+    throw new Error(`Missing required property: ${property}`);
+};
+
+export const toNewEntry = (object: Entry): Entry | Error => {
+    if (!object.date) {
+        return throwError('date');
+    }
+    if (!object.description) {
+        return throwError('description');
+    }
+
+    const newEntry: BaseEntry = {
+        id: `${Date.now()}`,
+        date: object.date,
+        specialist: object.specialist,
+        description: object.description,
+        diagnosisCodes: object.diagnosisCodes ? object.diagnosisCodes : []
+    };
+
+    switch (object.type) {
+        case 'HealthCheck':
+            if (object.healthCheckRating === undefined) {
+                return throwError('healthCheckRating');
+            }
+            return { ...newEntry, type: 'HealthCheck', healthCheckRating: object.healthCheckRating };
+        case 'Hospital':
+            if (object.discharge === undefined) {
+                return throwError('discharge');
+            }
+            return { ...newEntry, type: 'Hospital', discharge: object.discharge };
+        case 'OccupationalHealthcare':
+            if (object.employerName === undefined) {
+                return throwError('employerName');
+            }
+            return {
+                ...newEntry, type: 'OccupationalHealthcare',
+                employerName: object.employerName,
+                sickLeave: object.sickLeave ? object.sickLeave : undefined
+            };
+        default:
+            throw new Error("Something went wrong");
+    }
+
+};
+

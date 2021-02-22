@@ -1,7 +1,7 @@
 import express from 'express';
 import diagnosisService from './src/services/diagnosisService';
 import patientService from './src/services/patientService';
-import toNewPatient from "./utils";
+import { toNewPatient, toNewEntry } from "./utils";
 
 const app = express();
 app.use(express.json());
@@ -37,6 +37,21 @@ app.post('/api/patients', (req, res) => {
         const newPatient = toNewPatient(req.body);
         const addedPatient = patientService.addPatient(newPatient);
         res.json(addedPatient);
+    } catch (error) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        res.status(400).send(error.message);
+    }
+});
+
+app.post('/api/patients/:id/entries', (req, res) => {
+    try {
+        const { id } = req.params;
+        console.log("id     ", id, req.body);
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        const newEntry = toNewEntry(req.body);
+        res.json(newEntry);
+        // const addedPatient = patientService.addPatient(newPatient);
+        // res.json(addedPatient);
     } catch (error) {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         res.status(400).send(error.message);
