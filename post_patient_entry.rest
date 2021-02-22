@@ -3,7 +3,7 @@ content-type: application/json
 
 { "date": "2019-05-01",
 "specialist": "Dr Byte House",
-"type": "HealthCheck",
+"type": "HealthCheck ",
 "description": "Digital overdose, very bytestatic. Otherwise healthy.",
 "healthCheckRating": 0
 }

@@ -1,6 +1,6 @@
 import patientData from '../../patients';
 
-import { Patient, NonSensitivePatient } from '../../types';
+import { Patient, NonSensitivePatient, Entry } from '../../types';
 
 const patients: Array<Patient> = patientData;
 
@@ -17,8 +17,18 @@ const addPatient = (newPatient: Patient): Patient => {
     return newPatient;
 };
 
+const addPatientEntry = (id: string, newEntry: Entry): Patient | Error => {
+
+    const updatePatient = patients.find(patient => patient.id === id);
+    if (!updatePatient) {
+        return new Error("Something went wrong");
+    }
+    updatePatient?.entries.push(newEntry);
+    return updatePatient;
+};
+
 const getPatientInfo = (id: string): Patient | undefined => {
-    const patient = patients.find(patient => patient.id === id)
+    const patient = patients.find(patient => patient.id === id);
 
     if (!patient) {
         throw new Error("No patient found");
@@ -31,5 +41,6 @@ export default {
     getEntries,
     getNonSensitiveEntries,
     addPatient,
-    getPatientInfo
+    getPatientInfo,
+    addPatientEntry
 };

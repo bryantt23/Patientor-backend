@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import express from 'express';
 import diagnosisService from './src/services/diagnosisService';
 import patientService from './src/services/patientService';
@@ -46,12 +47,24 @@ app.post('/api/patients', (req, res) => {
 app.post('/api/patients/:id/entries', (req, res) => {
     try {
         const { id } = req.params;
-        console.log("id     ", id, req.body);
+        const patientInfo = patientService.getPatientInfo(id);
+        if (!patientInfo) {
+            // return new Error("Patient ID does not exist");
+            res.status(400).send("Patient ID does not exist");
+
+        }
+
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const newEntry = toNewEntry(req.body);
-        res.json(newEntry);
-        // const addedPatient = patientService.addPatient(newPatient);
-        // res.json(addedPatient);
+        if (newEntry instanceof Error) {
+            // return new Error("Bad entry");
+            res.status(400).send("Bad entry");
+        }
+        else {
+            const updatedPatient = patientService.addPatientEntry(id, newEntry);
+            res.json(updatedPatient);
+        }
+
     } catch (error) {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         res.status(400).send(error.message);
